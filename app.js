@@ -1,10 +1,11 @@
 const taskForm = document.querySelector('#task-form');
 const taskList = document.getElementById('task-list');
 
+loadTasks();
 //Event that detect the submit 
 taskForm.addEventListener('submit', (event)=>{
     event.preventDefault();
-
+    
     const taskInput = document.getElementById('task-input');
     const task = taskInput.value;
     console.log(task)
@@ -45,8 +46,9 @@ taskList.addEventListener('click', (event)=>{
 
 
 function deleteTask(taskItem){
-    if(confirm('Are you sure that you would like to delete this task?')){
+      if(confirm('Are you sure that you would like to delete this task?')){       
         taskItem.remove()
+        updateLocalStorage()
     }
 }
 
@@ -54,9 +56,13 @@ function editTask(taskItem){
     const newTask = prompt('Edit your task', taskItem.firstChild.textContent);
     if(newTask !== null){
         taskItem.firstChild.textContent = newTask;
+        // updateLocalStorage capture the info of DOM and update the localStorage
+        //for that reason it doesn't needs parameters for updating info
+        updateLocalStorage()
     }
     
 }
+
 
 function storeTaskInLocalStorage(task){
   let tasks =  JSON.parse(localStorage.getItem('tasks')|| "[]")
@@ -64,4 +70,14 @@ function storeTaskInLocalStorage(task){
   tasks.push(task)
   localStorage.setItem('tasks', JSON.stringify(tasks))
 
+}
+
+function loadTasks(){
+    const tasks = (JSON.parse(localStorage.getItem('tasks'))|| "[]")
+     tasks.forEach((task)=>{taskList.appendChild(createTaskElement(task))})
+}
+
+function updateLocalStorage(){
+    const tasks = Array.from(taskList.querySelectorAll('li')).map((li)=>li.firstChild.textContent)
+    localStorage.setItem('tasks',JSON.stringify(tasks) )
 }
