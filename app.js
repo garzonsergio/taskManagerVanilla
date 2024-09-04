@@ -10,6 +10,7 @@ taskForm.addEventListener('submit', (event)=>{
     console.log(task)
 
     if(task){
+        storeTaskInLocalStorage(task)
         taskList.append(createTaskElement(task));
         taskInput.value=''
     }
@@ -35,7 +36,7 @@ function createTaskElement(task){
 
 //Listener to decide if delete or edit a task
 taskList.addEventListener('click', (event)=>{
-    if(event.target.classList.contains('delete-btn')){
+       if(event.target.classList.contains('delete-btn')){
         deleteTask(event.target.parentElement)
     } else if(event.target.classList.contains('edit-btn')){
         editTask(event.target.parentElement)
@@ -55,4 +56,12 @@ function editTask(taskItem){
         taskItem.firstChild.textContent = newTask;
     }
     
+}
+
+function storeTaskInLocalStorage(task){
+  let tasks =  JSON.parse(localStorage.getItem('tasks')|| "[]")
+
+  tasks.push(task)
+  localStorage.setItem('tasks', JSON.stringify(tasks))
+
 }
